@@ -2,173 +2,92 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>터치 슬라이드 쇼</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title>복음 프레젠테이션</title>
     <style>
-        /* 1. CSS 스타일링 */
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            background-color: #000; /* 배경을 검정으로 하면 이미지가 더 돋보입니다 */
-        }
-
-        .slideshow-container {
-            max-width: 1000px;
-            position: relative;
-            margin: auto;
-            overflow: hidden;
-            background-color: #222;
-        }
-
-        /* 터치 영역 설정 */
-        .touch-zones {
+        body, html { margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden; background-color: #000; cursor: pointer; user-select: none; }
+        .slide-container { width: 100%; height: 100%; display: flex; justify-content: center; align-items: center; position: relative; }
+        
+        .slide-img { 
             position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 10;
-            display: flex;
-        }
-
-        .prev-zone, .next-zone {
-            width: 50%;
-            height: 100%;
-            cursor: pointer;
-            /* 작동 확인을 위해 아주 살짝 투명도를 줄 수 있습니다 */
-            -webkit-tap-highlight-color: transparent; 
-        }
-
-        .mySlides {
+            max-width: 100%; 
+            max-height: 100%; 
+            object-fit: contain; 
+            opacity: 0;
+            transition: opacity 0.4s ease;
             display: none;
         }
+        
+        .slide-img.active { opacity: 1; display: block; }
+        .progress-bar { position: absolute; top: 0; left: 0; height: 5px; background: #4CAF50; transition: width 0.3s; z-index: 10; width: 0%; }
 
-        img {
-            vertical-align: middle;
-            object-fit: contain;
-            width: 100%;
-            height: auto;
+        /* 전체화면 시작 버튼 스타일 */
+        #start-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.8); color: white;
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            z-index: 100; cursor: pointer;
         }
-
-        /* 부드러운 전환 효과 */
-        .fade {
-            animation: fade 1.0s;
-        }
-
-        @keyframes fade {
-            from {opacity: .4} 
-            to {opacity: 1}
-        }
-
-        .text {
-            color: #ffffff;
-            font-size: 18px;
-            font-weight: bold;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
-            position: absolute;
-            bottom: 20px;
-            width: 100%;
-            text-align: center;
-            pointer-events: none;
-            z-index: 11;
-        }
+        #start-overlay h2 { margin-bottom: 20px; font-weight: normal; }
+        .start-btn { padding: 15px 40px; background: #4CAF50; border: none; color: white; border-radius: 30px; font-size: 18px; }
     </style>
 </head>
 <body>
 
-    <div class="slideshow-container">
-        <div class="touch-zones">
-            <div class="prev-zone" onclick="plusSlides(-1)"></div>
-            <div class="next-zone" onclick="plusSlides(1)"></div>
-        </div>
+    <div id="start-overlay" onclick="startPresentation(event)">
+        <h2>프레젠테이션 시작</h2>
+        <button class="start-btn">전체 화면으로 보기</button>
+    </div>
 
-        <div class="mySlides fade">
-            <img src="image_0.jpg">
-            <div class="text">1 / 10</div>
-        </div>
-
-        <div class="mySlides fade">
-            <img src="image_1.jpg">
-            <div class="text">2 / 10</div>
-        </div>
-
-        <div class="mySlides fade">
-            <img src="image_2.jpg">
-            <div class="text">3 / 10</div>
-        </div>
-
-        <div class="mySlides fade">
-            <img src="image_3.jpg">
-            <div class="text">4 / 10</div>
-        </div>
-
-        <div class="mySlides fade">
-            <img src="image_4.jpg">
-            <div class="text">5 / 10</div>
-        </div>
-  <div class="mySlides fade">
-            <img src="image_5.jpg">
-            <div class="text">6 / 10</div>
-        </div>
-
-        <div class="mySlides fade">
-            <img src="image_6.jpg">
-            <div class="text">7 / 10</div>
-        </div>
-
-        <div class="mySlides fade">
-            <img src="image_7.jpg">
-            <div class="text">8 / 10</div>
-        </div>
-
-        <div class="mySlides fade">
-            <img src="image_8.jpg">
-            <div class="text">9 / 10</div>
-        </div>
-
-        <div class="mySlides fade">
-            <img src="image_9.jpg">
-            <div class="text">10 / 10</div>
-        </div>
+    <div class="progress-bar" id="pb"></div>
     
+    <div class="slide-container" onclick="nextSlide()">
+        <img src="image_0.jpg" class="slide-img active">
+        <img src="image_1.jpg" class="slide-img">
+        <img src="image_2.jpg" class="slide-img">
+        <img src="image_3.jpg" class="slide-img">
+        <img src="image_4.jpg" class="slide-img">
+        <img src="image_5.jpg" class="slide-img">
+        <img src="image_6.jpg" class="slide-img">
+        <img src="image_7.jpg" class="slide-img">
+        <img src="image_8.jpg" class="slide-img">
+        <img src="image_9.jpg" class="slide-img">
     </div>
 
     <script>
-        // 2. JavaScript 기능
-        let slideIndex = 1;
-        let slideTimer;
+        let currentIdx = 0;
+        const slides = document.querySelectorAll('.slide-img');
+        const pb = document.getElementById('pb');
 
-        showSlides(slideIndex);
-        startTimer();
-
-        function plusSlides(n) {
-            showSlides(slideIndex += n);
-            resetTimer();
-        }
-
-        function showSlides(n) {
-            let slides = document.getElementsByClassName("mySlides");
+        function startPresentation(event) {
+            // 이벤트 전파 방지
+            event.stopPropagation();
             
-            if (n > slides.length) {slideIndex = 1} 
-            if (n < 1) {slideIndex = slides.length}
-            
-            for (let i = 0; i < slides.length; i++) {
-                slides[i].style.display = "none"; 
-            }
-            slides[slideIndex-1].style.display = "block"; 
+            // 전체 화면 모드 진입
+            const doc = document.documentElement;
+            if (doc.requestFullscreen) doc.requestFullscreen();
+            else if (doc.mozRequestFullScreen) doc.mozRequestFullScreen();
+            else if (doc.webkitRequestFullscreen) doc.webkitRequestFullscreen();
+            else if (doc.msRequestFullscreen) doc.msRequestFullscreen();
+
+            // 오버레이 숨기기
+            document.getElementById('start-overlay').style.display = 'none';
+            updateProgressBar();
         }
 
-        function startTimer() {
-            slideTimer = setInterval(function() {
-                plusSlides(1);
-            }, 3000); // 3초마다 다음 슬라이드
+        function updateProgressBar() {
+            pb.style.width = ((currentIdx + 1) / slides.length * 100) + "%";
         }
 
-        function resetTimer() {
-            clearInterval(slideTimer);
-            startTimer();
+        function nextSlide() {
+            if (slides.length === 0) return;
+            slides[currentIdx].classList.remove('active');
+            currentIdx = (currentIdx + 1) % slides.length;
+            slides[currentIdx].classList.add('active');
+            updateProgressBar();
         }
     </script>
-
 </body>
 </html>
