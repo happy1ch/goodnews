@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>복음 프레젠테이션</title>
+    <style>
+        body, html { margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden; background-color: #ffffff; cursor: pointer; }
+        .slide-img { width: 100%; height: 100%; object-fit: contain; display: none; }
+        .slide-img.active { display: block; }
+        /* 진행바 */
+        .progress-bar { position: absolute; top: 0; left: 0; height: 5px; background: #4CAF50; transition: width 0.3s; }
+    </style>
+</head>
+<body onclick="nextSlide()">
+    <div class="progress-bar" id="pb"></div>
+    
+    <img src="Slide1.jpg" class="slide-img active">
+    <img src="Slide2.jpg" class="slide-img">
+    <img src="Slide3.jpg" class="slide-img">
+    <img src="Slide4.jpg" class="slide-img">
+    <img src="Slide5.jpg" class="slide-img">
+    <img src="Slide6.jpg" class="slide-img">
+    <img src="Slide7.jpg" class="slide-img">
+    <img src="Slide8.jpg" class="slide-img">
+    <img src="Slide9.jpg" class="slide-img">
+    <img src="Slide10.jpg" class="slide-img">
+
+    <script>
+        let currentIdx = 0;
+        const slides = document.querySelectorAll('.slide-img');
+        const pb = document.getElementById('pb');
+
+        function nextSlide() {
+            slides[currentIdx].classList.remove('active');
+            currentIdx = (currentIdx + 1) % slides.length;
+            slides[currentIdx].classList.add('active');
+            
+            // 진행도 표시
+            pb.style.width = ((currentIdx + 1) / slides.length * 100) + "%";
+        }
+        
+        // 초기 진행바 설정
+        pb.style.width = (1 / slides.length * 100) + "%";
+    </script>
+</body>
+</html>
